@@ -8,12 +8,12 @@ onehot_encoder = joblib.load('onehot_encoders.pkl')
 label_encoder = joblib.load('label_encoders.pkl')
 
 def input_to_df(input):
-    df = pd.DataFrame([input], columns=[
-        'no_of_adults', 'no_of_children', 'no_of_weekend_nights', 'no_of_week_nights',
+    data = [input]
+    df = pd.DataFrame(data, columns = ['no_of_adults', 'no_of_children', 'no_of_weekend_nights', 'no_of_week_nights',
         'type_of_meal_plan','required_car_parking_space','room_type_reserved','lead_time','arrival_year',
         'arrival_month','arrival_date','market_segment_type','repeated_guest','no_of_previous_cancellations',
-        'no_of_previous_bookings_not_canceled','avg_price_per_room','no_of_special_requests'
-    ])
+        'no_of_previous_bookings_not_canceled','avg_price_per_room','no_of_special_requests']
+    )
     return df
 
 def label_arrival_year(df):
@@ -22,12 +22,6 @@ def label_arrival_year(df):
             label_encoder = joblib.load('label_encoders.pkl')
             df['arrival_year'] = label_encoder.transform(df['arrival_year'])
     return df
-
-
-# def label_arrival_year(df):
-#     if 'arrival_year' in df.columns and 'arrival_year' in label_encoder:
-#         df['arrival_year'] = label_encoder['arrival_year'].transform(df['arrival_year'])
-#     return df
 
 def onehot_room_type_reserved(df):
     if 'room_type_reserved' in df.columns:
@@ -40,41 +34,9 @@ def onehot_room_type_reserved(df):
             df = pd.concat([df, onehot_df], axis=1)
     return df
 
-# def onehot_room_type_reserved(df):
-#     if 'room_type_reserved' in df.columns:
-#         if 'room_type_reserved' in onehot_encoder:
-#             encoded = onehot_encoder['room_type_reserved'].transform(df[['room_type_reserved']]).toarray()
-#             encoded_df = pd.DataFrame(encoded, columns=onehot_encoder['room_type_reserved'].get_feature_names_out(['room_type_reserved']))
-#             df = df.drop('room_type_reserved', axis=1)
-#             df = pd.concat([df.reset_index(drop=True), encoded_df], axis=1)
-#         else:
-#             st.error("OneHot encoder untuk 'room_type_reserved' tidak ditemukan dalam file.")
-#     else:
-#         st.error("Kolom 'room_type_reserved' tidak ditemukan dalam data input.")
-#     return df
-
-
-# def onehot_type_of_meal_plan(df):
-#     if 'room_type_reserved' in df.columns:
-#         encoded = onehot_encoder['type_of_meal_plan'].transform(df[['type_of_meal_plan']]).toarray()
-#         encoded_df = pd.DataFrame(
-#             encoded,
-#             columns=onehot_encoder['type_of_meal_plan'].get_feature_names_out(['type_of_meal_plan']),
-#             index=df.index
-#         )
-#         df = pd.concat([df.drop('type_of_meal_plan', axis=1), encoded_df], axis=1)
-#     return df
-
-# def onehot_market_segment_type(df):
-#     if 'market_segment_type' in df.columns:
-#         encoded = onehot_encoder['market_segment_type'].transform(df[['market_segment_type']]).toarray()
-#         encoded_df = pd.DataFrame(
-#             encoded,
-#             columns=onehot_encoder['market_segment_type'].get_feature_names_out(['market_segment_type']),
-#             index=df.index
-#         )
-#         df = pd.concat([df.drop('market_segment_type', axis=1), encoded_df], axis=1)
-#     return df
+def predict(model, user_input):
+    prediction = model.predict(user_input)
+    return prediction[0]
 
 def main():
     st.title('Model Deployment UTS')
@@ -106,10 +68,12 @@ def main():
                   lead_time, arrival_year, arrival_month, arrival_date, market_segment_type, repeated_guest, no_of_previous_cancellations, no_of_previous_bookings_not_canceled,
                   avg_price_per_room, no_of_special_requests]
     
-    df_input = input_to_df(user_input)
+    df = input_to_df(user_input)
   
     st.write('Data input by user')
-    st.write(df_input)
+    st.write(df)
+
+    
     
     df_input = label_arrival_year(df_input)
     df_input = onehot_room_type_reserved(df_input)

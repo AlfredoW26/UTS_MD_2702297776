@@ -17,7 +17,7 @@ def input_to_df(input):
     return df
 
 def label_arrival_year(df):
-  for 'arrival_year' in df.columns:
+  for df['arrival_year'] in df.columns:
     if df['arrival_year'].dtype == "object":
       df['arrival_year'] = label_encoder.fit_transform(df['arrival_year'])
   return df
@@ -28,7 +28,7 @@ def label_arrival_year(df):
 #     return df
 
 def onehot_room_type(df):
-  for 'room_type_reserved' in df.columns:
+  for df['room_type_reserved'] in df.columns:
     if df['room_type_reserved'].dtype == "object":
         encoded = onehot_encoder.fit_transform(df['room_type_reserved'])
         encoded_df = pd.DataFrame(encoded, columns=onehot_encoder['room_type_reserved'].get_feature_names_out(['room_type_reserved']))

@@ -7,14 +7,30 @@ model = joblib.load('random_forest_model.pkl')
 onehot_encoder = joblib.load('onehot_encoders.pkl')
 label_encoder = joblib.load('label_encoders.pkl')
 
-def input_to_df(input):
-    data = [input]
-    df = pd.DataFrame(data, columns = ['no_of_adults', 'no_of_children', 'no_of_weekend_nights', 'no_of_week_nights',
-        'type_of_meal_plan','required_car_parking_space','room_type_reserved','lead_time','arrival_year',
-        'arrival_month','arrival_date','market_segment_type','repeated_guest','no_of_previous_cancellations',
-        'no_of_previous_bookings_not_canceled','avg_price_per_room','no_of_special_requests']
-    )
-    return df
+def input_to_df(input_data):
+    columns = ['no_of_adults', 'no_of_children', 'no_of_weekend_nights', 'no_of_week_nights',
+               'type_of_meal_plan','required_car_parking_space','room_type_reserved','lead_time','arrival_year',
+               'arrival_month','arrival_date','market_segment_type','repeated_guest','no_of_previous_cancellations',
+               'no_of_previous_bookings_not_canceled','avg_price_per_room','no_of_special_requests']
+    return pd.DataFrame([input_data], columns=columns)
+
+def preprocess_input(df):
+    df_processed = df.copy()
+
+    # Label Encoding
+    for col in df.columns:
+        if col in label_encoder:
+            df_processed[col] = label_encoder[col].transform(df[col])
+
+    # OneHotEncoding
+    for col in onehot_encoder:
+        ohe = onehot_encoder[col]
+        ohe_array = ohe.transform(df_processed[[col]]).toarray()
+        ohe_df = pd.DataFrame(ohe_array, columns=ohe.get_feature_names_out([col]))
+        df_processed = df_processed.drop(columns=[col])
+        df_processed = pd.concat([df_processed, ohe_df], axis=1)
+
+    return df_processed
 
 # def label_arrival_year(df):
 #     if 'arrival_year' in df.columns:
@@ -68,24 +84,26 @@ def main():
                   lead_time, arrival_year, arrival_month, arrival_date, market_segment_type, repeated_guest, no_of_previous_cancellations, no_of_previous_bookings_not_canceled,
                   avg_price_per_room, no_of_special_requests]
     
-    df = input_to_df(user_input)
-  
-    st.write('Data input by user')
-    st.write(df)
+    df_input = input_to_df(user_input)
+    st.write("📊 Data Input oleh User")
+    st.write(df_input)
 
-    for col in ['arrival_year']:
-        if col in label_encoder:
-            df[col] = label_encoder[col].transform(df[col])
+     # Preprocessing
+    df_processed = preprocess_input(df_input)
+    # for col in ['arrival_year']:
+    #     if col in label_encoder:
+    #         df[col] = label_encoder[col].transform(df[col])
 
-    if 'type_of_meal_plan' in onehot_encoder:
-        ohe_status = onehot_encoder['type_of_meal_plan'].transform(df[['type_of_meal_plan']]).toarray()
-        ohe_status_df = pd.DataFrame(ohe_status, columns=onehot_encoder['type_of_meal_plan'].get_feature_names_out(['type_of_meal_plan']))
-        df = df.drop(columns=['type_of_meal_plan'])
-        df = pd.concat([df, ohe_status_df], axis=1)
+    # if 'type_of_meal_plan' in onehot_encoder:
+    #     ohe_status = onehot_encoder['type_of_meal_plan'].transform(df[['type_of_meal_plan']]).toarray()
+    #     ohe_status_df = pd.DataFrame(ohe_status, columns=onehot_encoder['type_of_meal_plan'].get_feature_names_out(['type_of_meal_plan']))
+    #     df = df.drop(columns=['type_of_meal_plan'])
+    #     df = pd.concat([df, ohe_status_df], axis=1)
 
-    if st.button("Prediction"):
-        prediksi = model.predict(df)
-        st.success(f"Hasil Prediksi: {prediksi[0]}")    
+    if st.button("🔍 Prediksi"):
+        prediction = model.predict(df_processed)[0]
+        result = "Booking Dibatalkan ❌" if prediction == 1 else "Booking Tidak Dibatalkan ✅"
+        st.success(f"Hasil Prediksi: {result}")  
     # df = label_arrival_year(df)
     # df = onehot_room_type_reserved(df)
     # df_input = onehot_type_of_meal_plan(df_input)

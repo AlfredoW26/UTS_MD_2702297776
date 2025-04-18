@@ -20,45 +20,37 @@ def preprocess_input(df):
     # Label Encoding
     for col in df.columns:
         if col in label_encoder:
-            df_processed[col] = label_encoder[col].transform(df[col])
+            le = label_encoder[col]
+            # Handle unseen labels by assigning a default value (like -1)
+            df_processed[col] = df[col].apply(lambda x: x if x in le.classes_ else -1)
+            df_processed[col] = le.transform(df_processed[col])
 
     # OneHotEncoding
     for col in onehot_encoder:
-        ohe = onehot_encoder[col]
-        ohe_array = ohe.transform(df_processed[[col]]).toarray()
-        ohe_df = pd.DataFrame(ohe_array, columns=ohe.get_feature_names_out([col]))
-        df_processed = df_processed.drop(columns=[col])
-        df_processed = pd.concat([df_processed, ohe_df], axis=1)
+        if col in df_processed.columns:
+            ohe = onehot_encoder[col]
+            # Handle unseen categories by ignoring them (handle_unknown='ignore')
+            ohe_array = ohe.transform(df_processed[[col]]).toarray()
+            ohe_df = pd.DataFrame(ohe_array, columns=ohe.get_feature_names_out([col]))
+            df_processed = df_processed.drop(columns=[col])
+            df_processed = pd.concat([df_processed, ohe_df], axis=1)
 
+    # Ensure all expected features are present
+    expected_features = model.feature_names_in_
+    for feature in expected_features:
+        if feature not in df_processed.columns:
+            df_processed[feature] = 0  # Add missing features with 0 value
+
+    # Reorder columns to match training data
+    df_processed = df_processed[expected_features]
+    
     return df_processed
-
-# def label_arrival_year(df):
-#     if 'arrival_year' in df.columns:
-#         if df['arrival_year'].dtype == "object":
-#             label_encoder = joblib.load('label_encoders.pkl')
-#             df['arrival_year'] = label_encoder.transform(df['arrival_year'])
-#     return df
-
-# def onehot_room_type_reserved(df):
-#     if 'room_type_reserved' in df.columns:
-#         if df['room_type_reserved'].dtype == 'object':
-#             onehot_encoder = joblib.load('onehot_encoders.pkl')
-#             transformed = onehot_encoder.transform(df[['room_type_reserved']]).toarray()
-#             col_names = onehot_encoder.get_feature_names_out(['room_type_reserved'])
-#             onehot_df = pd.DataFrame(transformed, columns=col_names, index=df.index)
-#             df = df.drop('room_type_reserved', axis=1)
-#             df = pd.concat([df, onehot_df], axis=1)
-#     return df
-
-# def predict(model, user_input):
-#     prediction = model.predict(user_input)
-#     return prediction[0]
 
 def main():
     st.title('Model Deployment UTS')
     st.info('This app will predict booking status is cancelled or not!')
 
-    with st.expander('**Data**'):
+    with st.expander('*Data*'):
         df = pd.read_csv('Dataset_B_hotel.csv')
         st.write(df)
         
@@ -88,40 +80,18 @@ def main():
     st.write("📊 Data Input oleh User")
     st.write(df_input)
 
-     # Preprocessing
+    # Preprocessing
     df_processed = preprocess_input(df_input)
-    # for col in ['arrival_year']:
-    #     if col in label_encoder:
-    #         df[col] = label_encoder[col].transform(df[col])
-
-    # if 'type_of_meal_plan' in onehot_encoder:
-    #     ohe_status = onehot_encoder['type_of_meal_plan'].transform(df[['type_of_meal_plan']]).toarray()
-    #     ohe_status_df = pd.DataFrame(ohe_status, columns=onehot_encoder['type_of_meal_plan'].get_feature_names_out(['type_of_meal_plan']))
-    #     df = df.drop(columns=['type_of_meal_plan'])
-    #     df = pd.concat([df, ohe_status_df], axis=1)
 
     if st.button("🔍 Prediksi"):
-        prediction = model.predict(df_processed)[0]
-        result = "Booking Dibatalkan ❌" if prediction == 1 else "Booking Tidak Dibatalkan ✅"
-        st.success(f"Hasil Prediksi: {result}")  
-    # df = label_arrival_year(df)
-    # df = onehot_room_type_reserved(df)
-    # df_input = onehot_type_of_meal_plan(df_input)
-    # df_input = onehot_market_segment_type(df_input)
-
-    # # --- Encoding ---
-    # df_encoded = encode(df_input)
-    # df_encoded = df_encoded.reindex(columns=model.feature_names_in_, fill_value=0)
-
-    # # --- Prediction ---
-    # prediction = model.predict(df_encoded)[0]
-    # prediction_proba = model.predict_proba(df_encoded)[0]
-    # result = 'Booking Cancelled' if prediction == 1 else 'Booking Not Cancelled'
-    # confidence = np.max(prediction_proba) * 100
-
-    # # --- Output ---
-    # st.subheader('Prediction Result')
-    # st.success(f'Prediction: **{result}** with **{confidence:.2f}%** confidence')
+        try:
+            prediction = model.predict(df_processed)[0]
+            result = "Booking Dibatalkan ❌" if prediction == 1 else "Booking Tidak Dibatalkan ✅"
+            st.success(f"Hasil Prediksi: {result}")
+        except Exception as e:
+            st.error(f"Error during prediction: {str(e)}")
+            st.write("Processed data features:", df_processed.columns.tolist())
+            st.write("Model expected features:", model.feature_names_in_)
 
 if __name__ == "__main__":
     main()

@@ -98,7 +98,7 @@ def main():
     if st.button("🔍 Prediksi"):
         try:
             prediction = model.predict(df_processed)[0]
-            result = "Booking Dibatalkan ❌" if prediction == 1 else "Booking Tidak Dibatalkan ✅"
+            result = "Cancelled ❌" if prediction == 0 else "Not Cancelled"
             st.success(f"Hasil Prediksi: {result}")
         except Exception as e:
             st.error(f"Error during prediction: {str(e)}")

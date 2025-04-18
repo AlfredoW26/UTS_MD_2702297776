@@ -72,10 +72,6 @@ def main():
   
     st.write('Data input by user')
     st.write(df_input)
-
-    # Preprocessing
-    df_input = encode(df_input)
-    df_input = normalize(df_input)
     
     st.subheader('Encoding Info')
     st.write("Label Encoded Columns:", list(label_encoder.keys()))

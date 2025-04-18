@@ -23,14 +23,17 @@ def label_arrival_year(df):
 
 def onehot_room_type_reserved(df):
     if 'room_type_reserved' in df.columns:
-        encoded = onehot_encoder['room_type_reserved'].transform(df[['room_type_reserved']]).toarray()
-        encoded_df = pd.DataFrame(
-            encoded,
-            columns=onehot_encoder['room_type_reserved'].get_feature_names_out(['room_type_reserved']),
-            index=df.index
-        )
-        df = pd.concat([df.drop('room_type_reserved', axis=1), encoded_df], axis=1)
+        if 'room_type_reserved' in onehot_encoder:
+            encoded = onehot_encoder['room_type_reserved'].transform(df[['room_type_reserved']]).toarray()
+            encoded_df = pd.DataFrame(encoded, columns=onehot_encoder['room_type_reserved'].get_feature_names_out(['room_type_reserved']))
+            df = df.drop('room_type_reserved', axis=1)
+            df = pd.concat([df.reset_index(drop=True), encoded_df], axis=1)
+        else:
+            st.error("OneHot encoder untuk 'room_type_reserved' tidak ditemukan dalam file.")
+    else:
+        st.error("Kolom 'room_type_reserved' tidak ditemukan dalam data input.")
     return df
+
 
 def onehot_type_of_meal_plan(df):
     if 'room_type_reserved' in df.columns:
@@ -91,8 +94,8 @@ def main():
     
     df_input = label_arrival_year(df_input)
     df_input = onehot_room_type_reserved(df_input)
-    df_input = onehot_type_of_meal_plan(df_input)
-    df_input = onehot_market_segment_type(df_input)
+    # df_input = onehot_type_of_meal_plan(df_input)
+    # df_input = onehot_market_segment_type(df_input)
 
     # # --- Encoding ---
     # df_encoded = encode(df_input)

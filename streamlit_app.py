@@ -18,7 +18,7 @@ def input_to_df(input):
 
 def label_arrival_year(df):
     if 'arrival_year' in df.columns:
-        df['arrival_year'] = label_encoder['arrival_year'].transform(df['arrival_year'])
+        df['arrival_year'] = label_encoder.transform(df['arrival_year'])
     return df
 
 def onehot_room_type_reserved(df):

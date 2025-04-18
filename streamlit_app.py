@@ -12,32 +12,48 @@ def input_to_df(input):
         'no_of_adults', 'no_of_children', 'no_of_weekend_nights', 'no_of_week_nights',
         'type_of_meal_plan','required_car_parking_space','room_type_reserved','lead_time','arrival_year',
         'arrival_month','arrival_date','market_segment_type','repeated_guest','no_of_previous_cancellations',
-        'no_of_previous_bookings_not_canceled','avg_price_per_room','no_of_special_requests','booking_status'
+        'no_of_previous_bookings_not_canceled','avg_price_per_room','no_of_special_requests'
     ])
     return df
 
-def label_encode(df):
-    for column in label_encoders:
-        if column in df.columns:
-            df[column] = label_encoders[column].transform(df[column])
+def label_arrival_year(df):
+    if 'arrival_year' in df.columns:
+        df['arrival_year'] = label_encoder['arrival_year'].transform(df['arrival_year'])
     return df
 
-def onehot_encode(df):
-    for column in onehot_encoders:
-        if column in df.columns:
-            onehot_df = pd.DataFrame(
-                onehot_encoders[column].transform(df[[column]]).toarray(),
-                columns=onehot_encoders[column].get_feature_names_out([column]),
-                index=df.index
-            )
-            df = pd.concat([df.drop(column, axis=1), onehot_df], axis=1)
+def onehot_room_type_reserved(df):
+    if 'room_type_reserved' in df.columns:
+        encoded = onehot_encoder['room_type_reserved'].transform(df[['room_type_reserved']]).toarray()
+        encoded_df = pd.DataFrame(
+            encoded,
+            columns=onehot_encoder['room_type_reserved'].get_feature_names_out(['room_type_reserved']),
+            index=df.index
+        )
+        df = pd.concat([df.drop('room_type_reserved', axis=1), encoded_df], axis=1)
     return df
 
-def encode(df):
-    df = label_encode(df)
-    df = onehot_encode(df)
+def onehot_type_of_meal_plan(df):
+    if 'room_type_reserved' in df.columns:
+        encoded = onehot_encoder['type_of_meal_plan'].transform(df[['type_of_meal_plan']]).toarray()
+        encoded_df = pd.DataFrame(
+            encoded,
+            columns=onehot_encoder['type_of_meal_plan'].get_feature_names_out(['type_of_meal_plan']),
+            index=df.index
+        )
+        df = pd.concat([df.drop('type_of_meal_plan', axis=1), encoded_df], axis=1)
     return df
-    
+
+def onehot_market_segment_type(df):
+    if 'market_segment_type' in df.columns:
+        encoded = onehot_encoder['market_segment_type'].transform(df[['market_segment_type']]).toarray()
+        encoded_df = pd.DataFrame(
+            encoded,
+            columns=onehot_encoder['market_segment_type'].get_feature_names_out(['market_segment_type']),
+            index=df.index
+        )
+        df = pd.concat([df.drop('market_segment_type', axis=1), encoded_df], axis=1)
+    return df
+
 def main():
     st.title('Model Deployment UTS')
     st.info('This app will predict booking status is cancelled or not!')
@@ -73,23 +89,24 @@ def main():
     st.write('Data input by user')
     st.write(df_input)
     
-    st.subheader('Encoding Info')
-    st.write("Label Encoded Columns:", list(label_encoder.keys()))
-    st.write("One-Hot Encoded Columns:", list(onehot_encoder.keys()))
+    label_arrival_year()
+    onehot_room_type_reserved()
+    onehot_type_of_meal_plan()
+    onehot_market_segment_type()
 
-    # --- Encoding ---
-    df_encoded = encode(df_input)
-    df_encoded = df_encoded.reindex(columns=model.feature_names_in_, fill_value=0)
+    # # --- Encoding ---
+    # df_encoded = encode(df_input)
+    # df_encoded = df_encoded.reindex(columns=model.feature_names_in_, fill_value=0)
 
-    # --- Prediction ---
-    prediction = model.predict(df_encoded)[0]
-    prediction_proba = model.predict_proba(df_encoded)[0]
-    result = 'Booking Cancelled' if prediction == 1 else 'Booking Not Cancelled'
-    confidence = np.max(prediction_proba) * 100
+    # # --- Prediction ---
+    # prediction = model.predict(df_encoded)[0]
+    # prediction_proba = model.predict_proba(df_encoded)[0]
+    # result = 'Booking Cancelled' if prediction == 1 else 'Booking Not Cancelled'
+    # confidence = np.max(prediction_proba) * 100
 
-    # --- Output ---
-    st.subheader('Prediction Result')
-    st.success(f'Prediction: **{result}** with **{confidence:.2f}%** confidence')
+    # # --- Output ---
+    # st.subheader('Prediction Result')
+    # st.success(f'Prediction: **{result}** with **{confidence:.2f}%** confidence')
 
 if __name__ == "__main__":
     main()

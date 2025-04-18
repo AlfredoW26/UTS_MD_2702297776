@@ -17,8 +17,8 @@ def input_to_df(input):
     return df
 
 def label_arrival_year(df):
-    if 'arrival_year' in df.columns:
-        df['arrival_year'] = label_encoder.transform(df['arrival_year'])
+    if 'arrival_year' in df.columns and 'arrival_year' in label_encoder:
+        df['arrival_year'] = label_encoder['arrival_year'].transform(df['arrival_year'])
     return df
 
 def onehot_room_type_reserved(df):
@@ -90,9 +90,9 @@ def main():
     st.write(df_input)
     
     df_input = label_arrival_year(df_input)
-    df_input = onehot_room_type_reserved(df_input)
-    df_input = onehot_type_of_meal_plan(df_input)
-    df_input = onehot_market_segment_type(df_input)
+    # df_input = onehot_room_type_reserved(df_input)
+    # df_input = onehot_type_of_meal_plan(df_input)
+    # df_input = onehot_market_segment_type(df_input)
 
     # # --- Encoding ---
     # df_encoded = encode(df_input)

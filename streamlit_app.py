@@ -17,10 +17,12 @@ def input_to_df(input):
     return df
 
 def label_arrival_year(df):
-  for df['arrival_year'] in df.columns:
-    if df['arrival_year'].dtype == "object":
-      df['arrival_year'] = label_encoder.fit_transform(df['arrival_year'])
-  return df
+    if 'arrival_year' in df.columns:
+        if df['arrival_year'].dtype == "object":
+            label_encoder = joblib.load('label_encoders.pkl')
+            df['arrival_year'] = label_encoder.transform(df['arrival_year'])
+    return df
+
 
 # def label_arrival_year(df):
 #     if 'arrival_year' in df.columns and 'arrival_year' in label_encoder:

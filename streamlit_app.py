@@ -89,10 +89,10 @@ def main():
     st.write('Data input by user')
     st.write(df_input)
     
-    label_arrival_year()
-    onehot_room_type_reserved()
-    onehot_type_of_meal_plan()
-    onehot_market_segment_type()
+    df_input = label_arrival_year(df_input)
+    df_input = onehot_room_type_reserved(df_input)
+    df_input = onehot_type_of_meal_plan(df_input)
+    df_input = onehot_market_segment_type(df_input)
 
     # # --- Encoding ---
     # df_encoded = encode(df_input)

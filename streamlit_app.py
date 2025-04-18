@@ -43,31 +43,33 @@ def main():
     st.info('This app will predict booking status is cancelled or not!')
 
     with st.expander('**Data**'):
-        df = pd.read_csv('ObesityDataSet_raw_and_data_sinthetic.csv')
+        df = pd.read_csv('Dataset_B_hotel.csv')
         st.write(df)
 
     with st.expander('**Data Visualization**'):
-        st.scatter_chart(data=df, x='Height', y='Weight', color='NObeyesdad')
-
-    gender = st.selectbox('Gender', ('Male', 'Female'))
-    age = st.slider('Age', min_value=0, max_value=75, value=21)
-    height = st.slider('Height', min_value=0.50, max_value=2.00, value=1.62)  
-    weight = st.slider('Weight', min_value=10.0, max_value=140.0, value=64.0) 
-    family_history_with_overweight = st.selectbox('Family History With Overweight', ('yes', 'no'))
-    FAVC = st.selectbox('Frequent Consumption of High Caloric Food', ('yes', 'no')) 
-    FCVC = st.slider('Vegetable Consumption Frequency', min_value=0.0, max_value=3.0, value=2.0)
-    NCP = st.slider('Number of Meals per Day', min_value=0.0, max_value=3.0, value=2.0)
-    CAEC = st.selectbox('Consumption of Food Between Meals', ('no', 'Sometimes', 'Frequently', 'Always')) 
-    SMOKE = st.selectbox('Smoking Habit', ('yes', 'no'))
-    CH2O = st.slider('Daily Water Intake', min_value=0.0, max_value=3.0, value=2.0)
-    SCC = st.selectbox('Caloric Drinks Consumption', ('yes', 'no'))
-    FAF = st.slider('Physical Activity Frequency', min_value=0.0, max_value=3.0, value=2.0)
-    TUE = st.slider('Time Using Technology', min_value=0.0, max_value=3.0, value=2.0)
-    CALC = st.selectbox('Alcohol Consumption', ('no', 'Sometimes', 'Frequently', 'Always')) 
-    MTRANS = st.selectbox('Transportation Mode', ('Automobile', 'Bike', 'Motorbike', 'Public_Transportation', 'Walking'))
-
-    user_input = [gender, age, height, weight, family_history_with_overweight, 
-                  FAVC, FCVC, NCP, CAEC, SMOKE, CH2O, SCC, FAF, TUE, CALC, MTRANS]
+        st.scatter_chart(data=df, x='Height', y='Weight', color='booking_status')
+        
+    no_of_adults = st.number_input('Number of Adults', min_value=0, max_value=10)
+    no_of_children = st.number_input('Number of Children', min_value=0,  max_value=10)
+    no_of_weekend_nights = st.number_input('Number of Weekend Nights', min_value=0, max_value=7)
+    no_of_week_nights = st.number_input('Number of Week Nights', min_value=0, max_value=20)
+    type_of_meal_plan = st.selectbox('Meal Plan', ['Meal Plan 1', 'Meal Plan 2', 'Meal Plan 3', 'Not Selected'])
+    required_car_parking_space = st.selectbox('Required Car Parking Space', [0, 1])
+    room_type_reserved = st.selectbox('Room Type Reserved', ['Room Type 1', 'Room Type 2', 'Room Type 3', 'Room Type 4', 'Room Type 5', 'Room Type 6', 'Room Type 7'])
+    lead_time = st.number_input('Lead Time', min_value=0, max_value=1000)
+    arrival_year = st.number_input('Arrival Year', min_value=2000, max_value=2023, value=2022)
+    arrival_month = st.number_input('Arrival Month', min_value=1, max_value=12, value=3)
+    arrival_date = st.number_input('Arrival Date', min_value=1, max_value=31, value=28)
+    market_segment_type = st.selectbox('Market Segment Type', ['Aviation', 'Complementary', 'Corporate', 'Offline', 'Online'])
+    repeated_guest = st.number_input('Repeated Guest', min_value=0, max_value=1, value=0)
+    no_of_previous_cancellations = st.number_input('Number of Previous Cancellations', min_value=0, max_value=20)
+    no_of_previous_bookings_not_canceled = st.number_input('Number of Previous Bookings Not Canceled', min_value=0, max_value=100)
+    avg_price_per_room = st.number_input('Average Price per Room', min_value=0.0, max_value=100000.00)
+    no_of_special_requests = st.number_input('Number of Special Requests', min_value=0, value=5)
+    
+    user_input = [no_of_adults, no_of_children, no_of_weekend_nights, no_of_week_nights, type_of_meal_plan, required_car_parking_space, room_type_reserved,
+                  lead_time, arrival_year, arrival_month, arrival_date, market_segment_type, repeated_guest, no_of_previous_cancellations, no_of_previous_bookings_not_canceled,
+                  avg_price_per_room, no_of_special_requests]
     
     df_input = input_to_df(user_input)
 

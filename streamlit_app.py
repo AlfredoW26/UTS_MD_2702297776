@@ -29,14 +29,16 @@ def label_arrival_year(df):
 #         df['arrival_year'] = label_encoder['arrival_year'].transform(df['arrival_year'])
 #     return df
 
-def onehot_room_type(df):
-  for df['room_type_reserved'] in df.columns:
-    if df['room_type_reserved'].dtype == "object":
-        encoded = onehot_encoder.fit_transform(df['room_type_reserved'])
-        encoded_df = pd.DataFrame(encoded, columns=onehot_encoder['room_type_reserved'].get_feature_names_out(['room_type_reserved']))
-        df = df.drop('room_type_reserved', axis=1)
-        df= pd.concat([df.reset_index(drop=True), encoded_df], axis=1) 
-  return df
+def onehot_room_type_reserved(df):
+    if 'room_type_reserved' in df.columns:
+        if df['room_type_reserved'].dtype == 'object':
+            onehot_encoder = joblib.load('onehot_encoders.pkl')
+            transformed = onehot_encoder.transform(df[['room_type_reserved']]).toarray()
+            col_names = onehot_encoder.get_feature_names_out(['room_type_reserved'])
+            onehot_df = pd.DataFrame(transformed, columns=col_names, index=df.index)
+            df = df.drop('room_type_reserved', axis=1)
+            df = pd.concat([df, onehot_df], axis=1)
+    return df
 
 # def onehot_room_type_reserved(df):
 #     if 'room_type_reserved' in df.columns:

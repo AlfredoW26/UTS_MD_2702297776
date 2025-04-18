@@ -34,9 +34,9 @@ def input_to_df(input):
 #             df = pd.concat([df, onehot_df], axis=1)
 #     return df
 
-def predict(model, user_input):
-    prediction = model.predict(user_input)
-    return prediction[0]
+# def predict(model, user_input):
+#     prediction = model.predict(user_input)
+#     return prediction[0]
 
 def main():
     st.title('Model Deployment UTS')

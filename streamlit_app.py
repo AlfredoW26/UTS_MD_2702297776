@@ -16,23 +16,23 @@ def input_to_df(input):
     )
     return df
 
-def label_arrival_year(df):
-    if 'arrival_year' in df.columns:
-        if df['arrival_year'].dtype == "object":
-            label_encoder = joblib.load('label_encoders.pkl')
-            df['arrival_year'] = label_encoder.transform(df['arrival_year'])
-    return df
+# def label_arrival_year(df):
+#     if 'arrival_year' in df.columns:
+#         if df['arrival_year'].dtype == "object":
+#             label_encoder = joblib.load('label_encoders.pkl')
+#             df['arrival_year'] = label_encoder.transform(df['arrival_year'])
+#     return df
 
-def onehot_room_type_reserved(df):
-    if 'room_type_reserved' in df.columns:
-        if df['room_type_reserved'].dtype == 'object':
-            onehot_encoder = joblib.load('onehot_encoders.pkl')
-            transformed = onehot_encoder.transform(df[['room_type_reserved']]).toarray()
-            col_names = onehot_encoder.get_feature_names_out(['room_type_reserved'])
-            onehot_df = pd.DataFrame(transformed, columns=col_names, index=df.index)
-            df = df.drop('room_type_reserved', axis=1)
-            df = pd.concat([df, onehot_df], axis=1)
-    return df
+# def onehot_room_type_reserved(df):
+#     if 'room_type_reserved' in df.columns:
+#         if df['room_type_reserved'].dtype == 'object':
+#             onehot_encoder = joblib.load('onehot_encoders.pkl')
+#             transformed = onehot_encoder.transform(df[['room_type_reserved']]).toarray()
+#             col_names = onehot_encoder.get_feature_names_out(['room_type_reserved'])
+#             onehot_df = pd.DataFrame(transformed, columns=col_names, index=df.index)
+#             df = df.drop('room_type_reserved', axis=1)
+#             df = pd.concat([df, onehot_df], axis=1)
+#     return df
 
 def predict(model, user_input):
     prediction = model.predict(user_input)
@@ -73,10 +73,21 @@ def main():
     st.write('Data input by user')
     st.write(df)
 
-    
-    
-    df = label_arrival_year(df)
-    df = onehot_room_type_reserved(df)
+    for col in ['arrival_year']:
+        if col in label_encoder:
+            df[col] = label_encoder[col].transform(df[col])
+
+    if 'type_of_meal_plan' in onehot_encoder:
+        ohe_status = onehot_encoder['type_of_meal_plan'].transform(df[['type_of_meal_plan']]).toarray()
+        ohe_status_df = pd.DataFrame(ohe_status, columns=onehot_encoder['type_of_meal_plan'].get_feature_names_out(['type_of_meal_plan']))
+        df = df.drop(columns=['type_of_meal_plan'])
+        df = pd.concat([df, ohe_status_df], axis=1)
+
+    if st.button("Prediction"):
+        prediksi = model.predict(df)
+        st.success(f"Hasil Prediksi: {prediksi[0]}")    
+    # df = label_arrival_year(df)
+    # df = onehot_room_type_reserved(df)
     # df_input = onehot_type_of_meal_plan(df_input)
     # df_input = onehot_market_segment_type(df_input)
 

@@ -46,8 +46,6 @@ def main():
         df = pd.read_csv('Dataset_B_hotel.csv')
         st.write(df)
 
-    with st.expander('**Data Visualization**'):
-        st.scatter_chart(data=df, x='Height', y='Weight', color='booking_status')
         
     no_of_adults = st.number_input('Number of Adults', min_value=0, max_value=10)
     no_of_children = st.number_input('Number of Children', min_value=0,  max_value=10)

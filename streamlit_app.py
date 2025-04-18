@@ -45,7 +45,6 @@ def main():
     with st.expander('**Data**'):
         df = pd.read_csv('Dataset_B_hotel.csv')
         st.write(df)
-
         
     no_of_adults = st.number_input('Number of Adults', min_value=0, max_value=10)
     no_of_children = st.number_input('Number of Children', min_value=0,  max_value=10)
@@ -70,7 +69,7 @@ def main():
                   avg_price_per_room, no_of_special_requests]
     
     df_input = input_to_df(user_input)
-
+  
     st.write('Data input by user')
     st.write(df_input)
 
@@ -78,24 +77,23 @@ def main():
     df_input = encode(df_input)
     df_input = normalize(df_input)
     
-    try:
-        feature_names = model.feature_names_in_
-    except AttributeError:
-        feature_names = df_input.columns
-    
-    df_input = df_input[feature_names]
-    
-    prediction = model.predict(df_input)[0]
-    prediction_proba = model.predict_proba(df_input)
+    st.subheader('Encoding Info')
+    st.write("Label Encoded Columns:", list(label_encoder.keys()))
+    st.write("One-Hot Encoded Columns:", list(onehot_encoder.keys()))
 
-    df_prediction_proba = pd.DataFrame(prediction_proba, columns=[
-        'Insufficient Weight', 'Normal Weight', 'Overweight Level I', 
-        'Overweight Level II', 'Obesity Type I', 'Obesity Type II', 'Obesity Type III'
-    ])
+    # --- Encoding ---
+    df_encoded = encode(df_input)
+    df_encoded = df_encoded.reindex(columns=model.feature_names_in_, fill_value=0)
 
-    st.write('Obesity Prediction Probability')
-    st.write(df_prediction_proba)
-    st.write('The predicted output is:', prediction)
+    # --- Prediction ---
+    prediction = model.predict(df_encoded)[0]
+    prediction_proba = model.predict_proba(df_encoded)[0]
+    result = 'Booking Cancelled' if prediction == 1 else 'Booking Not Cancelled'
+    confidence = np.max(prediction_proba) * 100
+
+    # --- Output ---
+    st.subheader('Prediction Result')
+    st.success(f'Prediction: **{result}** with **{confidence:.2f}%** confidence')
 
 if __name__ == "__main__":
     main()

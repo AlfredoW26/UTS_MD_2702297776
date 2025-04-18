@@ -17,45 +17,60 @@ def input_to_df(input):
     return df
 
 def label_arrival_year(df):
-    if 'arrival_year' in df.columns and 'arrival_year' in label_encoder:
-        df['arrival_year'] = label_encoder['arrival_year'].transform(df['arrival_year'])
-    return df
+  for 'arrival_year' in df.columns:
+    if df['arrival_year'].dtype == "object":
+      df['arrival_year'] = label_encoder.fit_transform(df['arrival_year'])
+  return df
 
-def onehot_room_type_reserved(df):
-    if 'room_type_reserved' in df.columns:
-        if 'room_type_reserved' in onehot_encoder:
-            encoded = onehot_encoder['room_type_reserved'].transform(df[['room_type_reserved']]).toarray()
-            encoded_df = pd.DataFrame(encoded, columns=onehot_encoder['room_type_reserved'].get_feature_names_out(['room_type_reserved']))
-            df = df.drop('room_type_reserved', axis=1)
-            df = pd.concat([df.reset_index(drop=True), encoded_df], axis=1)
-        else:
-            st.error("OneHot encoder untuk 'room_type_reserved' tidak ditemukan dalam file.")
-    else:
-        st.error("Kolom 'room_type_reserved' tidak ditemukan dalam data input.")
-    return df
+# def label_arrival_year(df):
+#     if 'arrival_year' in df.columns and 'arrival_year' in label_encoder:
+#         df['arrival_year'] = label_encoder['arrival_year'].transform(df['arrival_year'])
+#     return df
+
+def onehot_room_type(df):
+  for 'room_type_reserved' in df.columns:
+    if df['room_type_reserved'].dtype == "object":
+        encoded = onehot_encoder.fit_transform(df['room_type_reserved'])
+        encoded_df = pd.DataFrame(encoded, columns=onehot_encoder['room_type_reserved'].get_feature_names_out(['room_type_reserved']))
+        df = df.drop('room_type_reserved', axis=1)
+        df= pd.concat([df.reset_index(drop=True), encoded_df], axis=1) 
+  return df
+
+# def onehot_room_type_reserved(df):
+#     if 'room_type_reserved' in df.columns:
+#         if 'room_type_reserved' in onehot_encoder:
+#             encoded = onehot_encoder['room_type_reserved'].transform(df[['room_type_reserved']]).toarray()
+#             encoded_df = pd.DataFrame(encoded, columns=onehot_encoder['room_type_reserved'].get_feature_names_out(['room_type_reserved']))
+#             df = df.drop('room_type_reserved', axis=1)
+#             df = pd.concat([df.reset_index(drop=True), encoded_df], axis=1)
+#         else:
+#             st.error("OneHot encoder untuk 'room_type_reserved' tidak ditemukan dalam file.")
+#     else:
+#         st.error("Kolom 'room_type_reserved' tidak ditemukan dalam data input.")
+#     return df
 
 
-def onehot_type_of_meal_plan(df):
-    if 'room_type_reserved' in df.columns:
-        encoded = onehot_encoder['type_of_meal_plan'].transform(df[['type_of_meal_plan']]).toarray()
-        encoded_df = pd.DataFrame(
-            encoded,
-            columns=onehot_encoder['type_of_meal_plan'].get_feature_names_out(['type_of_meal_plan']),
-            index=df.index
-        )
-        df = pd.concat([df.drop('type_of_meal_plan', axis=1), encoded_df], axis=1)
-    return df
+# def onehot_type_of_meal_plan(df):
+#     if 'room_type_reserved' in df.columns:
+#         encoded = onehot_encoder['type_of_meal_plan'].transform(df[['type_of_meal_plan']]).toarray()
+#         encoded_df = pd.DataFrame(
+#             encoded,
+#             columns=onehot_encoder['type_of_meal_plan'].get_feature_names_out(['type_of_meal_plan']),
+#             index=df.index
+#         )
+#         df = pd.concat([df.drop('type_of_meal_plan', axis=1), encoded_df], axis=1)
+#     return df
 
-def onehot_market_segment_type(df):
-    if 'market_segment_type' in df.columns:
-        encoded = onehot_encoder['market_segment_type'].transform(df[['market_segment_type']]).toarray()
-        encoded_df = pd.DataFrame(
-            encoded,
-            columns=onehot_encoder['market_segment_type'].get_feature_names_out(['market_segment_type']),
-            index=df.index
-        )
-        df = pd.concat([df.drop('market_segment_type', axis=1), encoded_df], axis=1)
-    return df
+# def onehot_market_segment_type(df):
+#     if 'market_segment_type' in df.columns:
+#         encoded = onehot_encoder['market_segment_type'].transform(df[['market_segment_type']]).toarray()
+#         encoded_df = pd.DataFrame(
+#             encoded,
+#             columns=onehot_encoder['market_segment_type'].get_feature_names_out(['market_segment_type']),
+#             index=df.index
+#         )
+#         df = pd.concat([df.drop('market_segment_type', axis=1), encoded_df], axis=1)
+#     return df
 
 def main():
     st.title('Model Deployment UTS')

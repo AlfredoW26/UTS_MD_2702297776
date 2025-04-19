@@ -58,6 +58,10 @@ def preprocess_input(df):
     
     return df_processed[expected_features]
 
+def predict_with_model(model, user_input):
+    prediction = model.predict(user_input)
+    return prediction[0]
+
 def main():
     st.title('Model Deployment UTS')
     st.info('This app will predict booking status is cancelled or not!')

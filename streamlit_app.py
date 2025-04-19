@@ -57,11 +57,15 @@ def main():
         onehot_columns = ['type_of_meal_plan','room_type_reserved','market_segment_type']
         onehot_df = pd.DataFrame(onehot_encoder.fit_transform(df_input[onehot_columns]),
                                  columns=onehot_encoder.get_feature_names_out(onehot_columns),
-                                 index=df_input.index
-        )
+                                 )
+
+        df_input = df_input.reset_index(drop=True)
+        onehot_df = onehot_df.reset_index(drop=True)
         
-        df_encoded = pd.concat([df_input.drop(columns=onehot_columns), onehot_df],axis=1)
-        prediction = predict_with_model(model, df_encoded)
+        # df_encoded = pd.concat([df_input.drop(columns=onehot_columns), onehot_df],axis=1)
+        df_input = pd.concat([df_input, onehot_df], axis=1)
+        df_input = df_input.drop(columns=onehot_columns) 
+        prediction = predict_with_model(model, df_input)
 
         st.success(f"Prediction: {'Not Cancelled' if prediction == 0 else 'Cancelled'}")
 

@@ -101,7 +101,7 @@ def main():
 
     if st.button("🔍 Prediksi"):
         prediction = predict_with_model(model, df_processed)
-        st.success(f"Prediction: {'Not Cancelled' if prediction == 0 else 'Cancelled'}")
+        st.success(f"Prediction: {'Not Cancelled' if prediction == 1 else 'Cancelled'}")
 
 
 if __name__ == "__main__":

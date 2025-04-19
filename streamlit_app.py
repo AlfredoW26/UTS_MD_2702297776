@@ -5,7 +5,6 @@ import joblib
 
 model = joblib.load('random_forest_model.pkl')
 onehot_encoder = joblib.load('onehot_encoders.pkl')
-label_encoder = joblib.load('label_encoders.pkl')
 
 def input_to_df(input_data):
     columns = ['no_of_adults', 'no_of_children', 'no_of_weekend_nights', 'no_of_week_nights',

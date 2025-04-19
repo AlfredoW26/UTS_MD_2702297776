@@ -18,50 +18,6 @@ def predict_with_model(model, user_input):
     prediction = model.predict(user_input)
     return prediction[0]
 
-# def preprocess_input(df):
-#     df_processed = df.copy()
-    
-#     # 1. Label Encoding untuk 'arrival_year'
-#     if 'arrival_year' in df_processed.columns:
-#         le = label_encoder['arrival_year'] if 'arrival_year' in label_encoder else None
-#         if le:
-#             df_processed['arrival_year'] = df_processed['arrival_year'].apply(
-#                 lambda x: x if x in le.classes_ else -1
-#             )
-#             df_processed['arrival_year'] = le.transform(df_processed['arrival_year'])
-    
-#     # 2. One-Hot Encoding untuk 'type_of_meal_plan'
-#     if 'type_of_meal_plan' in df_processed.columns:
-#         ohe = onehot_encoder['type_of_meal_plan'] if 'type_of_meal_plan' in onehot_encoder else None
-#         if ohe:
-#             ohe_array = ohe.transform(df_processed[['type_of_meal_plan']]).toarray()
-#             ohe_df = pd.DataFrame(ohe_array, columns=ohe.get_feature_names_out(['type_of_meal_plan']))
-#             df_processed = pd.concat([df_processed.drop('type_of_meal_plan', axis=1), ohe_df], axis=1)
-    
-#     # 3. One-Hot Encoding untuk 'room_type_reserved'
-#     if 'room_type_reserved' in df_processed.columns:
-#         ohe = onehot_encoder['room_type_reserved'] if 'room_type_reserved' in onehot_encoder else None
-#         if ohe:
-#             ohe_array = ohe.transform(df_processed[['room_type_reserved']]).toarray()
-#             ohe_df = pd.DataFrame(ohe_array, columns=ohe.get_feature_names_out(['room_type_reserved']))
-#             df_processed = pd.concat([df_processed.drop('room_type_reserved', axis=1), ohe_df], axis=1)
-    
-#     # 4. One-Hot Encoding untuk 'market_segment_type'
-#     if 'market_segment_type' in df_processed.columns:
-#         ohe = onehot_encoder['market_segment_type'] if 'market_segment_type' in onehot_encoder else None
-#         if ohe:
-#             ohe_array = ohe.transform(df_processed[['market_segment_type']]).toarray()
-#             ohe_df = pd.DataFrame(ohe_array, columns=ohe.get_feature_names_out(['market_segment_type']))
-#             df_processed = pd.concat([df_processed.drop('market_segment_type', axis=1), ohe_df], axis=1)
-    
-#     # Handle missing features
-#     expected_features = model.feature_names_in_
-#     for feature in expected_features:
-#         if feature not in df_processed.columns:
-#             df_processed[feature] = 0
-    
-#     return df_processed[expected_features]
-
 def main():
     st.title('Model Deployment UTS')
     st.info('This app will predict booking status is cancelled or not!')
@@ -109,21 +65,7 @@ def main():
         df_encoded = pd.concat([df_input.drop(columns=onehot_columns],axis=1)
         prediction = predict_with_model(model, df_encoded)
 
-        st.success(f"Prediction: {'Not Canceled' if prediction == 0 else 'Cancel'})
-            
-
-    # Preprocessing
-    # df_processed = preprocess_input(df_input)
-
-    # if st.button("🔍 Prediksi"):
-    #     try:
-    #         prediction = model.predict(df_processed)[0]
-    #         result = "Cancelled ❌" if prediction == 0 else "Not Cancelled"
-    #         st.success(f"Hasil Prediksi: {result}")
-    #     except Exception as e:
-    #         st.error(f"Error during prediction: {str(e)}")
-    #         st.write("Processed data features:", df_processed.columns.tolist())
-    #         st.write("Model expected features:", model.feature_names_in_)
+        st.success(f"Prediction: {'Not Cancelled' if prediction == 0 else 'Cancel'})
 
 if __name__ == "__main__":
     main()

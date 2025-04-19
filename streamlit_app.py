@@ -55,7 +55,7 @@ def main():
         encode_arrival_year = 1 if arrival_year == "2018" else 0
 
         onehot_columns = ['type_of_meal_plan','room_type_reserved','market_segment_type']
-        onehot_df = pd.DataFrame(onehot_encoder.transform(df_input[onehot_columns]),
+        onehot_df = pd.DataFrame(onehot_encoder.fit_transform(df_input[onehot_columns]),
                                  columns=onehot_encoder.get_feature_names_out(onehot_columns),
                                  index=df_input.index
         )

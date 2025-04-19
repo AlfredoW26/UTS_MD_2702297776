@@ -96,14 +96,9 @@ def main():
     df_processed = preprocess_input(df_input)
 
     if st.button("🔍 Prediksi"):
-        try:
-            prediction = model.predict(df_processed)[0]
-            result = "Cancelled ❌" if prediction == 0 else "Not Cancelled"
-            st.success(f"Hasil Prediksi: {result}")
-        except Exception as e:
-            st.error(f"Error during prediction: {str(e)}")
-            st.write("Processed data features:", df_processed.columns.tolist())
-            st.write("Model expected features:", model.feature_names_in_)
+        prediction = predict_with_model(model, df_processed)
+        st.success(f"Prediction: {'Not Cancelled' if prediction == 0 else 'Cancelled'}")
+
 
 if __name__ == "__main__":
     main()

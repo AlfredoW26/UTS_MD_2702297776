@@ -26,9 +26,9 @@ def main():
         df = pd.read_csv('Dataset_B_hotel.csv')
         st.write(df)
         
-    no_of_adults = st.slider('Number of Adults', min_value=0, max_value=10)
-    no_of_children = st.slider('Number of Children', min_value=0,  max_value=10)
-    no_of_weekend_nights = st.slider('Number of Weekend Nights', min_value=0, max_value=8)
+    no_of_adults = st.number_input('Number of Adults', min_value=0, max_value=10)
+    no_of_children = st.number_input('Number of Children', min_value=0,  max_value=10)
+    no_of_weekend_nights = st.number_input('Number of Weekend Nights', min_value=0, max_value=8)
     no_of_week_nights = st.number_input('Number of Week Nights', min_value=0, max_value=20)
     type_of_meal_plan = st.selectbox('Meal Plan', ['Meal Plan 1', 'Meal Plan 2', 'Meal Plan 3', 'Not Selected'])
     required_car_parking_space = st.selectbox('Required Car Parking Space', [0, 1])
@@ -42,7 +42,7 @@ def main():
     no_of_previous_cancellations = st.number_input('Number of Previous Cancellations', min_value=0, max_value=20)
     no_of_previous_bookings_not_canceled = st.number_input('Number of Previous Bookings Not Canceled', min_value=0, max_value=100)
     avg_price_per_room = st.number_input('Average Price per Room', min_value=0.0, max_value=100000.00)
-    no_of_special_requests = st.slider('Number of Special Requests', min_value=0, value=5)
+    no_of_special_requests = st.number_input('Number of Special Requests', min_value=0, value=5)
     
     user_input = [no_of_adults, no_of_children, no_of_weekend_nights, no_of_week_nights, type_of_meal_plan, required_car_parking_space, room_type_reserved,
                   lead_time, arrival_year, arrival_month, arrival_date, market_segment_type, repeated_guest, no_of_previous_cancellations, no_of_previous_bookings_not_canceled,

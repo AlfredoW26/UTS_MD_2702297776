@@ -105,5 +105,5 @@ def main():
             st.write("Processed data features:", df_processed.columns.tolist())
             st.write("Model expected features:", model.feature_names_in_)
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()

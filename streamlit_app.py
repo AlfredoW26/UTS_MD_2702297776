@@ -62,7 +62,7 @@ def main():
                                      index=df_input.index(drop=True)
         )
         
-        df_encoded = pd.concat([df_input.drop(columns=onehot_columns],axis=1)
+        df_encoded = pd.concat([df_input.drop(columns=onehot_columns)],axis=1)
         prediction = predict_with_model(model, df_encoded)
 
         st.success(f"Prediction: {'Not Cancelled' if prediction == 0 else 'Cancelled'}")

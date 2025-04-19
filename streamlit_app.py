@@ -33,7 +33,7 @@ def main():
     type_of_meal_plan = st.selectbox('Meal Plan', ['Meal Plan 1', 'Meal Plan 2', 'Meal Plan 3', 'Not Selected'])
     required_car_parking_space = st.selectbox('Required Car Parking Space', [0, 1])
     room_type_reserved = st.selectbox('Room Type Reserved', ['Room Type 1', 'Room Type 2', 'Room Type 3', 'Room Type 4', 'Room Type 5', 'Room Type 6', 'Room Type 7'])
-    lead_time = st.slider('Lead Time', min_value=0, max_value=1000)
+    lead_time = st.number_input('Lead Time', min_value=0, max_value=1000)
     arrival_year = st.selectbox('Arrival Year', ['2017', '2018'])
     arrival_month = st.slider('Arrival Month', min_value=1, max_value=12, value=3)
     arrival_date = st.slider('Arrival Date', min_value=1, max_value=31, value=28)

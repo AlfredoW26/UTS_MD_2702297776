@@ -79,14 +79,14 @@ def main():
     room_type_reserved = st.selectbox('Room Type Reserved', ['Room Type 1', 'Room Type 2', 'Room Type 3', 'Room Type 4', 'Room Type 5', 'Room Type 6', 'Room Type 7'])
     lead_time = st.number_input('Lead Time', min_value=0, max_value=1000)
     arrival_year = st.selectbox('Arrival Year', [2017, 2018])
-    arrival_month = st.number_input('Arrival Month', min_value=1, max_value=12, value=3)
-    arrival_date = st.number_input('Arrival Date', min_value=1, max_value=31, value=28)
+    arrival_month = st.number_input('Arrival Month', min_value=1, max_value=12)
+    arrival_date = st.number_input('Arrival Date', min_value=1, max_value=31,)
     market_segment_type = st.selectbox('Market Segment Type', ['Aviation', 'Complementary', 'Corporate', 'Offline', 'Online'])
     repeated_guest = st.selectbox('Repeated Guest', [0, 1])
     no_of_previous_cancellations = st.number_input('Number of Previous Cancellations', min_value=0, max_value=20)
     no_of_previous_bookings_not_canceled = st.number_input('Number of Previous Bookings Not Canceled', min_value=0, max_value=100)
     avg_price_per_room = st.number_input('Average Price per Room', min_value=0.0, max_value=100000.00)
-    no_of_special_requests = st.number_input('Number of Special Requests', min_value=0, value=5)
+    no_of_special_requests = st.number_input('Number of Special Requests', min_value=0)
     
     user_input = [no_of_adults, no_of_children, no_of_weekend_nights, no_of_week_nights, type_of_meal_plan, required_car_parking_space, room_type_reserved,
                   lead_time, arrival_year, arrival_month, arrival_date, market_segment_type, repeated_guest, no_of_previous_cancellations, no_of_previous_bookings_not_canceled,

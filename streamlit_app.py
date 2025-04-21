@@ -17,7 +17,7 @@ def input_to_df(input_data):
 def preprocess_input(df):
     df_processed = df.copy()
     
-    # 1. Label Encoding untuk 'arrival_year'
+    # Label Encoding 'arrival_year'
     if 'arrival_year' in df_processed.columns:
         le = label_encoder['arrival_year'] if 'arrival_year' in label_encoder else None
         if le:
@@ -26,7 +26,7 @@ def preprocess_input(df):
             )
             df_processed['arrival_year'] = le.transform(df_processed['arrival_year'])
     
-    # 2. One-Hot Encoding untuk 'type_of_meal_plan'
+    # One-Hot Encoding 'type_of_meal_plan'
     if 'type_of_meal_plan' in df_processed.columns:
         ohe = onehot_encoder['type_of_meal_plan'] if 'type_of_meal_plan' in onehot_encoder else None
         if ohe:
@@ -34,7 +34,7 @@ def preprocess_input(df):
             ohe_df = pd.DataFrame(ohe_array, columns=ohe.get_feature_names_out(['type_of_meal_plan']))
             df_processed = pd.concat([df_processed.drop('type_of_meal_plan', axis=1), ohe_df], axis=1)
     
-    # 3. One-Hot Encoding untuk 'room_type_reserved'
+    # One-Hot Encoding 'room_type_reserved'
     if 'room_type_reserved' in df_processed.columns:
         ohe = onehot_encoder['room_type_reserved'] if 'room_type_reserved' in onehot_encoder else None
         if ohe:
@@ -42,7 +42,7 @@ def preprocess_input(df):
             ohe_df = pd.DataFrame(ohe_array, columns=ohe.get_feature_names_out(['room_type_reserved']))
             df_processed = pd.concat([df_processed.drop('room_type_reserved', axis=1), ohe_df], axis=1)
     
-    # 4. One-Hot Encoding untuk 'market_segment_type'
+    # One-Hot Encoding untuk 'market_segment_type'
     if 'market_segment_type' in df_processed.columns:
         ohe = onehot_encoder['market_segment_type'] if 'market_segment_type' in onehot_encoder else None
         if ohe:
@@ -96,7 +96,6 @@ def main():
     st.write("📊 Data Input oleh User")
     st.write(df_input)
 
-    # Preprocessing
     df_processed = preprocess_input(df_input)
 
     if st.button("🔍 Prediksi"):
